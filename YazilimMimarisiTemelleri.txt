@@ -1,0 +1,208 @@
+## YAZILIM MİMARİSİ TEMELLERİ
+
+-Yazılım mimarisi, bir yazılım sisteminin yapısal iskeletini, bileşenlerini, bu bileşenlerin birbirleriyle olan ilişkilerini ve aralarındaki iletişim kurallarını belirleyen temel tasarımdır. Bir binanın blueprint'i (mühendislik planı) neyse, yazılım mimarisi de dijital sistemler için odur. Sağlam bir yazılım mimarisinin temel amaçları şunlardır:
+
+->Sürdürülebilirlik (Maintainability):
+ Kodun anlaşılır, güncellenebilir ve hatalardan arındırılabilir olması.
+
+->Ölçeklenebilirlik (Scalability):
+ Sistem yükü arttığında (kullanıcı sayısı veya veri hacmi büyüdüğünde) sistemin bunu performans kaybı yaşamadan karşılayabilmesi.
+
+->Modülerlik: 
+Bileşenlerin bağımsız geliştirilebilmesi ve birinde yapılan değişikliğin diğerlerini minimum düzeyde etkilemesi.
+
+->Performans ve Güvenilirlik: 
+Sistemin hızlı yanıt vermesi ve olası kesintilere karşı dirençli olması.
+
+# Monolitik Mimari (Monolithic Architecture)
+
+Monolitik mimari, geleneksel ve en yaygın yazılım geliştirme yaklaşımıdır. Bu yapıda, bir uygulamanın tüm bileşenleri (kullanıcı arayüzü, iş mantığı, veritabanı bağlantıları, servisler) tek ve birleşik bir kod tabanı içinde toplanır ve tek bir paket olarak derlenip dağıtılır.
+
+->Nasıl Çalışır? 
+Tüm modüller aynı belleği ve süreci paylaşır. Örneğin, bir e-ticaret uygulamasında sepet, ödeme ve kullanıcı yönetimi modüllerinin hepsi aynı projenin içindedir.
+
+>Avantajları:
+
+-Geliştirmesi Kolaydır: Proje başlangıcında tek bir depo (repository) üzerinden hızlıca ayağa kaldırılabilir.
+
+-Dağıtım (Deployment) Basittir: Uygulamanın tek bir dosyası veya imajı sunucuya yüklenerek yayınlanır.
+
+-Performans: Modüller arası iletişim doğrudan bellek üzerinden (fonksiyon çağrılarıyla) yapıldığı için ağ gecikmesi (network latency) yoktur.
+
+->Dezavantajları:
+
+-Ölçeklenebilirlik Zorluğu: Uygulamanın sadece tek bir yoğun modülü (örneğin sadece ödeme ekranı) yavaşlasa bile, tüm uygulamanın ölçeklenmesi gerekir; bu da kaynak israfına yol açar.
+
+-Teknoloji Bağımlılığı: Projede kullanılan bir teknolojiyi veya dili güncellemek veya değiştirmek tüm sistemi etkiler.
+
+-Bakım Karmaşıklığı: Kod tabanı büyüdükçe (God Object sendromu), yeni geliştiricilerin sisteme adapte olması zorlaşır ve küçük bir hata tüm sistemi çökertebilir.
+
+# Mikroservis Mimarisi (Microservices Architecture)
+
+Mikroservis mimarisi, büyük bir uygulamanın küçük, bağımsız ve kendi işlevini yerine getiren servisler bütünü olarak tasarlanmasını sağlayan modern bir yaklaşımdır. Her bir servis kendi veritabanına sahip olabilir ve kendi yaşam döngüsünde çalışır.
+
+->Nasıl Çalışır?
+ Servisler birbirleriyle doğrudan bellek üzerinden değil, hafif iletişim protokolleri (genellikle HTTP/REST API'ler, gRPC veya mesaj kuyrukları - RabbitMQ, Kafka) aracılığıyla haberleşir.
+
+->Avantajları:
+
+-Bağımsız Ölçeklenebilirlik: Yalnızca yoğun talep alan servis (örneğin sadece ürün arama motoru) ayrı olarak ölçeklenebilir.
+
+-Teknoloji Çeşitliliği: Farklı mikroservisler farklı programlama dilleri veya veri tabanlarıyla yazılabilir (örneğin bir servis Python ile diğeri Node.js veya Java ile geliştirilebilir).
+
+-Hata İzolasyonu: Bir servisteki çökme veya hata, tüm uygulamanın tamamen erişilemez hale gelmesini engeller.
+
+->Dezavantajları:
+
+-Yüksek Karmaşıklık: Ağ üzerinden haberleşme, servis keşfi (service discovery), yük dengeleme (load balancing) ve dağıtık veri yönetimi gibi ek zorluklar getirir.
+
+-Dağıtım ve Operasyonel Yük (DevOps): Onlarca hatta yüzlerce servisi yönetmek, izlemek (monitoring) ve CI/CD pipeline süreçlerini kurmak ciddi uzmanlık gerektirir.
+
+-Ağ Gecikmesi: Servisler arası HTTP istekleri, monolitik sistemlerdeki bellek içi çağrılara göre daha yavaştır.
+
+#Monolith vs Microservice
+
+->Yapısal Farklar: 
+Monolitik mimari, uygulamanın tüm bileşenlerini tek bir çatı altında birleştiren tek ve birleşik bir kod tabanı sunar. Buna karşın mikroservis mimarisi, her biri kendi işlevini yerine getiren ve birbirinden bağımsız çalışan küçük servisler bütünü olarak tasarlanır.
+
+->Ölçekleme Yaklaşımı: 
+Monolitik sistemlerde bir modül bile yoğunluk yaşasa tüm uygulamanın kopyalanarak ölçeklenmesi gerekir; bu da kaynak israfına yol açabilir. Mikroservislerde ise yalnızca yoğun talep alan o spesifik servis bağımsız olarak ölçeklenebilir.
+
+->Hata Yönetimi ve İzolasyon: 
+Monolitik yapılarda bir modülde (örneğin bellek sızıntısı veya kritik bir hata) yaşanan çökme tüm sistemi erişilmez kılabilir. Mikroservislerde ise hata genellikle ilgili servisle sınırlı kalır, sistemin kalanı çalışmaya devam eder.
+
+->Öğrenme Eğrisi ve Başlangıç Maliyeti: 
+Monolitik mimari, tek bir depo üzerinden hızlıca kurulabildiği için proje başlangıcında oldukça kolaydır. Mikroservis mimarisi ise ağ yönetimi, servis keşfi ve dağıtık yapı gerektirdiği için başlangıçta yüksek bir altyapı ve karmaşıklık maliyeti getirir.
+
+->Kullanım Alanları:
+ Monolitik mimari küçük/orta ölçekli projeler, yeni kurulan girişimler (MVP aşamaları) ve hızlı prototip üretmek için idealdir. Mikroservis mimarisi ise yüksek trafikli, büyük ekiplerin eş zamanlı çalıştığı ve sürekli büyüme hedefleyen kurumsal sistemler için tercih edilir.
+
+##Mimari Desenler
+
+#MVC(Model-View-Controller)
+
+MVC, yazılım dünyasındaki en eski ve en popüler mimari desenlerden biridir. Uygulamayı üç ana bileşene ayırır:
+
+->Model (Veri ve İş Mantığı):
+ Veritabanı işlemlerini, iş kurallarını ve uygulamanın verilerini yönetir. Kullanıcı arayüzünden bağımsızdır.
+
+->View (Arayüz / Görünüm):
+ Kullanıcının gördüğü ve etkileşime girdiği görsel katmandır (HTML sayfaları, mobil arayüz tasarımları vb.). Mod'den aldığı verileri ekranda gösterir.
+
+->Controller (Kontrolcü): Kullanıcıdan gelen istekleri (örneğin bir tuşa basılması veya URL değişimi) karşılar. Model ile View arasında köprü görevi görür; veriyi Model'den alır, işler ve uygun View'a gönderir.
+
+->Nasıl Çalışır? 
+Kullanıcı arayüzde bir eylem gerçekleştirir (Controller bunu yakalar)->  Controller, Model'den gerekli veriyi ister-> Model veriyi getirir->Controller veriyi View'a aktarır ve kullanıcıya güncel ekran gösterilir.
+
+#MVVM (Model-View-ViewModel)
+
+Özellikle modern arayüz framework'lerinde (WPF, Android Jetpack, SwiftUI, Flutter vb.) popüler olan MVVM, özellikle çift yönlü veri bağlama (Two-way Data Binding) ihtiyacını karşılamak için geliştirilmiştir.
+
+->Model: 
+Tıpkı MVC'deki gibi veri yapısını ve iş mantığını barındırır.
+
+->View: 
+Kullanıcı arayüzüdür. ViewModel ile doğrudan veri bağı (binding) kurar.
+
+->ViewModel: 
+View için gerekli verileri ve komutları hazırlayan bileşendir. View ile Model arasında aracıdır ancak MVC'deki Controller'dan farklı olarak View'ı doğrudan bilmez, onunla veri bağları üzerinden haberleşir.
+
+->Avantajı Nedir? 
+Veri bağlama (Data Binding) sayesinde, ViewModel'deki bir veri değiştiğinde arayüz (View) otomatik olarak güncellenir. Bu da arayüz kodlarının (UI logic) çok daha az ve test edilebilir olmasını sağlar.
+
+#MVC ve MVVM Arasındaki Temel Farklar
+
+->İletişim Yönü ve Akış:
+-MVC'de Controller, View'ı doğrudan yönetir ve yönlendirir; genellikle tek yönlü bir akış baskındır.
+
+-MVVM'de ise View ve ViewModel arasında çift yönlü veri bağlama (Data Binding) mekanizması bulunur. ViewModel, arayüzün (View) ne olduğunu doğrudan bilmez; bunun yerine veri akışını tetikler ve View bu değişiklikleri otomatik olarak gözlemler (observer).
+
+->Test Edilebilirlik:
+-MVC'de Controller genellikle UI bileşenlerine sıkı sıkıya bağlı olduğundan, kodun birim testlerini (Unit Testing) yazmak zorlaşabilir.
+
+-MVVM'de ViewModel, UI elementlerinden tamamen bağımsız tasarlandığı için bileşenleri izole etmek ve birim testler yazmak çok daha kolaydır.
+
+->Kullanım Alanları:
+-MVC daha çok geleneksel web uygulamalarında (ASP.NET MVC, Laravel, Ruby on Rails vb.) ve sunucu tabanlı projelerde yaygındır.
+
+-MVVM ise günümüzün modern mobil ve masaüstü arayüz framework'lerinde (Android Jetpack, SwiftUI, WPF vb.) standart haline gelmiştir.
+
+# State Management Nedir?
+
+-Yazılım geliştirme dünyasında State (Durum), bir uygulamanın o anki "hafızası" veya "fotoğrafıdır". Kullanıcının sisteme giriş yapıp yapmadığı, alışveriş sepetindeki ürünler, form alanına yazılan metinler, açılır menünün açık ya da kapalı olması veya seçilen tema (koyu/açık mod) birer state örneğidir.
+
+-State Management (Durum Yönetimi) ise bu verilerin uygulamanın farklı bileşenleri arasında nasıl saklanacağını, güncelleneceğini ve arayüzle nasıl senkronize edileceğini kontrol eden mekanizmaların bütünüdür.
+
+->Neden State Management'a İhtiyaç Duyarız?
+
+-Senkronizasyon: Kullanıcı bir butona basıp sepete ürün eklediğinde, ekranın bambaşka bir köşesindeki sepet simgesinin üzerindeki sayının anında güncellenmesi gerekir. Verinin doğru zamanda doğru yerde güncellenmesini sağlar.
+
+-Karmaşıklığı Azaltma (Prop Drilling Önleme): Küçük projelerde veriler üst bileşenden alt bileşenlere kolayca aktarılabilir. Ancak proje büyüdükçe veriyi onlarca katman aşağıya elden aktarmak (prop drilling) imkansızlaşır. Global state çözümleri veriyi merkezi bir yerde tutarak bu karmaşayı çözer.
+
+-Öngörülebilirlik ve Hata Ayıklama: Verinin nerede, ne zaman ve nasıl değiştirildiğini takip etmek (özellikle MVI veya Redux gibi tek yönlü akışa sahip sistemlerde) hataları bulmayı kolaylaştırır.
+
+->State Türleri Nelerdir?
+
+-Local State (Yerel Durum): Sadece tek bir bileşeni ilgilendiren ve dışarıdaki bileşenlerin bilmesine gerek olmayan durumlardır. (Örn: Bir butonun üzerine gelindiğinde renginin değişmesi veya bir akordeon menünün açık/kapalı olması).
+
+-Global State (Genel Durum): Uygulamanın birden fazla farklı sayfasını veya bileşenini ilgilendiren ortak verilerdir. (Örn: Kullanıcı oturum bilgileri, dil tercihleri, tema ayarları).
+
+-Server State (Sunucu State): Backend veya API'den çekilen ve istemcide (client) geçici olarak saklanan verilerdir (örneğin bir blog yazıları listesi).
+
+->Popüler State Management Kütüphaneleri ve Yaklaşımları
+
+Kullanılan programlama diline veya çatıya (framework) göre farklı yöntemler tercih edilir:
+
+-React / React Native Dünyası:
+• Context API: React'in yerleşik, basit global veri taşıma aracıdır.
+
+• Zustand: Minimalist, az kod yazdıran (boilerplate'i az) popüler bir kütüphanedir.
+
+• Redux / Redux Toolkit: Büyük ölçekli ve ekipli projelerde veri akışını tamamen kurallı ve denetlenebilir kılan endüstri standardıdır.
+
+• Jotai / Recoil: Veriyi küçük parçalara ("atom") bölen atomik yaklaşımı benimser.
+
+• TanStack Query (SWR): Sunucu taraflı (server state) verilerin çekilmesi, cache'lenmesi ve güncellenmesi için kullanılır.
+
+-Flutter Dünyası:
+• setState: En temel, dahili ve yerel state yönetimidir.
+
+• Provider: Flutter ekosisteminde resmi olarak tavsiye edilen, yaygın kullanılan bir yapıdır.
+
+• Bloc / Riverpod / GetX: Ölçeklenebilir projelerde tercih edilen diğer popüler mimari ve paketlerdir.
+
+#Katmanlı mimari (service–repository–controller)
+
+Yazılım projelerinde sorumlulukları (rolleri) birbirine karıştırmamak ve kodun sürdürülebilir, test edilebilir ve anlaşılır olmasını sağlamak için kullanılan yaygın bir yazılım tasarım yaklaşımıdır.
+
+->Katmanlar ve Sorumlulukları
+
+• Controller Katmanı: Dış dünya (istemci, mobil uygulama, tarayıcı veya REST API) ile ilk iletişimi kuran katmandır. HTTP isteklerini karşılar, rota (route) parametrelerini alır, gelen veriyi ilgili servise iletir ve uygun HTTP durum kodlarıyla (örn. 200, 400, 404) sonucu geri döner. İş mantığı içermez; sadece yönlendirici görevi görür.
+
+• Service (Servis / Business) Katmanı: Uygulamanın iş kurallarının (business logic) ve akışlarının yazıldığı beyin katmanıdır. Gelen verinin geçerliliğini (validasyon) kontrol eder, birden fazla repository veya domain nesnesini koordine eder ve kullanım senaryolarını (use case) yönetir.
+
+• Repository Katmanı: Veritabanı (SQL, NoSQL vb.) ile ilgili tüm veri erişim işlemlerini (CRUD: Create, Read, Update, Delete) kapsayan ve soyutlayan katmandır. SQL sorgularını veya ORM (Entity Framework, Hibernate vb.) kodlarını burada tutarak veritabanı detaylarını iş mantığından izole eder.
+
+->Veri Akışı Nasıl Çalışır?
+
+1. İstek: Kullanıcı arayüzünden veya istemciden bir istek gelir (örneğin: yeni bir kullanıcı kaydı).
+2. Controller: İstek Controller tarafından karşılanır ve veriler servis katmanına aktarılır.
+3. Service: Service katmanı iş kurallarını uygular (örn. email formatı doğru mu, şifre yeterince uzun mu?).
+4. Repository: Kurallardan geçen veri, Repository aracılığıyla veritabanına kaydedilir.
+5. Yanıt: İşlem sonucu Repository’den Service’e, oradan Controller’a ve nihayetinde JSON veya View formatında kullanıcıya döner.
+
+->Bu Mimarinin Avantajları Neden Önemlidir?
+
+• Tek Sorumluluk (Single Responsibility): Her katman yalnızca kendi işini yapar. Veritabanı değiştiğinde sadece repository, iş kuralı değiştiğinde sadece service katmanı etkilenir.
+
+• Kolay Test Edilebilirlik: İş mantığını ve veritabanı işlemlerini izole ettiğiniz için birim testleri (unit test) yazmak çok daha kolaydır.
+
+• Kod Tekrarını Önleme ve Esneklik: Aynı iş mantığına farklı controller'lardan (örneğin hem web panelinden hem mobil API'den) erişebilirsiniz.
+Hangi programlama dili veya framework (örneğin Java Spring Boot, C# .NET, PHP Laravel, Node.js) ile bu mimariyi kurmayı planlıyorsunuz? Belirtirseniz örnek bir kod yapısı paylaşabilirim.
+
+
+
+
+
+
+
